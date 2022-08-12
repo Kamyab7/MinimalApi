@@ -29,4 +29,13 @@ app.MapGet("api/v1/movies", async (AppDbContext context) => {
     return Results.Ok(movies);
 });
 
+app.MapGet("api/v1/movies/{id}", async (AppDbContext context, int id) => {
+    var movie = await context.Movies.FindAsync(id);
+    if (movie != null)
+    {
+        return Results.Ok(movie);
+    }
+    return Results.NotFound();
+});
+
 app.Run();
