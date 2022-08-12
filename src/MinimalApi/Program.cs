@@ -24,4 +24,9 @@ if (app.Environment.IsDevelopment())
 
 app.UseHttpsRedirection();
 
+app.MapGet("api/v1/movies", async (AppDbContext context) => {
+    var movies = await context.Movies.ToListAsync();
+    return Results.Ok(movies);
+});
+
 app.Run();
