@@ -1,5 +1,7 @@
 using Microsoft.EntityFrameworkCore;
 using MinimalApi.Database;
+using MinimalApi.Dtos;
+using MinimalApi.Entities;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -36,6 +38,23 @@ app.MapGet("api/v1/movies/{id}", async (AppDbContext context, int id) => {
         return Results.Ok(movie);
     }
     return Results.NotFound();
+});
+
+app.MapPost("api/v1/movies", async (AppDbContext context, MovieDto MovieDto) => {
+
+    var movie = new Movie()
+    {
+        title = MovieDto.title,
+        description = MovieDto.description,
+        CreatedDate = MovieDto.CreatedDate
+    };
+
+    await context.Movies.AddAsync(movie);
+
+    await context.SaveChangesAsync();
+
+    return Results.Created($"api/v1/commands/{movie.id}", MovieDto);
+
 });
 
 app.Run();
