@@ -1,7 +1,8 @@
+using Application.Common.Interfaces;
+using Domain.Entities;
+using Infrastructure;
 using Microsoft.EntityFrameworkCore;
-using MinimalApi.Database;
 using MinimalApi.Dtos;
-using MinimalApi.Entities;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -10,10 +11,7 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
-builder.Services.AddDbContext<AppDbContext>(options =>
-    options.UseInMemoryDatabase("MinimalApiDb"));
-
-builder.Services.AddScoped<AppDbContext>();
+builder.Services.AddInfrastructure(builder.Configuration);
 
 var app = builder.Build();
 
@@ -26,12 +24,12 @@ if (app.Environment.IsDevelopment())
 
 app.UseHttpsRedirection();
 
-app.MapGet("api/v1/movies", async (AppDbContext context) => {
+app.MapGet("api/v1/movies", async (IAppDbContext context) => {
     var movies = await context.Movies.ToListAsync();
     return Results.Ok(movies);
 });
 
-app.MapGet("api/v1/movies/{id}", async (AppDbContext context, int id) => {
+app.MapGet("api/v1/movies/{id}", async (IAppDbContext context, int id) => {
     var movie = await context.Movies.FindAsync(id);
     if (movie != null)
     {
@@ -40,7 +38,7 @@ app.MapGet("api/v1/movies/{id}", async (AppDbContext context, int id) => {
     return Results.NotFound();
 });
 
-app.MapPost("api/v1/movies", async (AppDbContext context, MovieDto MovieDto) => {
+app.MapPost("api/v1/movies", async (IAppDbContext context, MovieDto MovieDto, CancellationToken cancellationToken) => {
 
     var movie = new Movie()
     {
@@ -51,13 +49,13 @@ app.MapPost("api/v1/movies", async (AppDbContext context, MovieDto MovieDto) => 
 
     await context.Movies.AddAsync(movie);
 
-    await context.SaveChangesAsync();
+    await context.SaveChangesAsync(cancellationToken);
 
     return Results.Created($"api/v1/commands/{movie.id}", MovieDto);
 
 });
 
-app.MapPut("api/v1/movies/{id}", async (AppDbContext context,int id, MovieDto MovieDto) => {
+app.MapPut("api/v1/movies/{id}", async (IAppDbContext context,int id, MovieDto MovieDto, CancellationToken cancellationToken) => {
     var movie = await context.Movies.FindAsync(id);
     if (movie == null)
     {
@@ -68,12 +66,12 @@ app.MapPut("api/v1/movies/{id}", async (AppDbContext context,int id, MovieDto Mo
     movie.description = MovieDto.description;
     movie.CreatedDate = MovieDto.CreatedDate;
 
-    await context.SaveChangesAsync();
+    await context.SaveChangesAsync(cancellationToken);
 
     return Results.NoContent();
 });
 
-app.MapDelete("api/v1/movies/{id}", async (AppDbContext context,int id) => {
+app.MapDelete("api/v1/movies/{id}", async (IAppDbContext context,int id, CancellationToken cancellationToken) => {
     var movie = await context.Movies.FindAsync(id);
     if (movie == null)
     {
@@ -82,7 +80,7 @@ app.MapDelete("api/v1/movies/{id}", async (AppDbContext context,int id) => {
 
     context.Movies.Remove(movie);
 
-    await context.SaveChangesAsync();
+    await context.SaveChangesAsync(cancellationToken);
 
     return Results.NoContent();
 
