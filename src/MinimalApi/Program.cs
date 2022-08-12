@@ -73,4 +73,19 @@ app.MapPut("api/v1/movies/{id}", async (AppDbContext context,int id, MovieDto Mo
     return Results.NoContent();
 });
 
+app.MapDelete("api/v1/movies/{id}", async (AppDbContext context,int id) => {
+    var movie = await context.Movies.FindAsync(id);
+    if (movie == null)
+    {
+        return Results.NotFound();
+    }
+
+    context.Movies.Remove(movie);
+
+    await context.SaveChangesAsync();
+
+    return Results.NoContent();
+
+});
+
 app.Run();
