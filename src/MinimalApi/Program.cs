@@ -57,4 +57,20 @@ app.MapPost("api/v1/movies", async (AppDbContext context, MovieDto MovieDto) => 
 
 });
 
+app.MapPut("api/v1/movies/{id}", async (AppDbContext context,int id, MovieDto MovieDto) => {
+    var movie = await context.Movies.FindAsync(id);
+    if (movie == null)
+    {
+        return Results.NotFound();
+    }
+
+    movie.title = MovieDto.title;
+    movie.description = MovieDto.description;
+    movie.CreatedDate = MovieDto.CreatedDate;
+
+    await context.SaveChangesAsync();
+
+    return Results.NoContent();
+});
+
 app.Run();
