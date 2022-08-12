@@ -1,3 +1,4 @@
+using Application;
 using Application.Common.Interfaces;
 using Domain.Entities;
 using Infrastructure;
@@ -12,6 +13,7 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
 builder.Services.AddInfrastructure(builder.Configuration);
+builder.Services.AddApplication();
 
 var app = builder.Build();
 
