@@ -26,6 +26,8 @@ if (app.Environment.IsDevelopment())
 
 app.UseHttpsRedirection();
 
+app.UseStaticFiles();
+
 app.MapGet("api/v1/movies", async (AppDbContext context) => {
     var movies = await context.Movies.ToListAsync();
     return Results.Ok(movies);
@@ -87,5 +89,7 @@ app.MapDelete("api/v1/movies/{id}", async (AppDbContext context,int id) => {
     return Results.NoContent();
 
 });
+
+app.MapFallbackToFile("index.html"); ;
 
 app.Run();
