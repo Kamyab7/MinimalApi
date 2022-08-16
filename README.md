@@ -1,5 +1,7 @@
 # MinimalApi
 
+[![CI](https://github.com/mehdihadeli/store-golang-microservices/actions/workflows/ci.yml/badge.svg?branch=main&style=flat-square)](https://github.com/Kamyab7/MinimalApi/blob/main/.github/workflows/build.yml)
+
 🌀 This Application is `in-progress` and I will add new features and thecnologies over time. 
 
 ## Technologies - Libraries
