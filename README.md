@@ -17,7 +17,7 @@ High-level plan is represented in the table
 | Feature | Status |
 | ------- | ------ |
 | Client Application | In Progress 👷‍ |
-| Clean Architecture | In Progress 👷‍ |
+| Clean Architecture | Done ✔️ |
 | API Endpoints | Done ✔️ |
 | Security | Not Started 🚩 |
 
